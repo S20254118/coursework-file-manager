@@ -1,7 +1,7 @@
 
 # Failų valdymo sistema (OOP kursinis darbas)
 
-Šis projektas yra failų valdymo sistema, sukurta naudojant Python ir objektinio programavimo (OOP) principus.
+Šis projektas buvo sukurtas kaip kursinis darbas, siekiant pritaikyti objektinio programavimo principus praktikoje.
 
 Sistema leidžia vartotojui atlikti pagrindines failų operacijas ir turi undo/redo funkcionalumą, kuris leidžia atšaukti ir pakartoti veiksmus.
 
@@ -173,9 +173,6 @@ Pasiekimai:
 * modulinė architektūra
 * stabilus darbas su failais
 * įgyvendintas undo/redo mechanizmas
-  '@ | Set-Content -Encoding UTF8 README.md
-
-@'
 
 # Failų valdymo sistema (OOP kursinis darbas)
 

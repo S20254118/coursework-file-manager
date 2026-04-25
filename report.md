@@ -6,6 +6,8 @@
 
 Programa leidžia atlikti pagrindines failų operacijas: kurti, skaityti, rašyti, pervadinti ir trinti failus. Taip pat įgyvendintas undo/redo funkcionalumas, kuris leidžia atšaukti arba pakartoti veiksmus.
 
+Darbo metu buvo siekiama ne tik sukurti veikiančią programą, bet ir pritaikyti teorines OOP žinias praktikoje.
+
 ---
 
 ## Analizė (Body / Analysis)
@@ -78,11 +80,13 @@ self._base_directory
 self._undo_stack
 ```
 
+Šie principai padeda sukurti lankstesnę ir lengviau prižiūrimą programą.
+
 ---
 
 ### Projektavimo šablonas
 
-Naudojamas **Command Pattern**.
+Šiame projekte naudojamas **Command Pattern**.
 
 Kiekviena operacija yra atskiras objektas:
 
@@ -97,6 +101,18 @@ history.execute_operation(operation)
 * įgyvendinti undo/redo
 * atskirti logiką nuo vykdymo
 
+#### Sustiprinta analizė
+
+Command Pattern pasirinktas todėl, kad jis leidžia kiekvieną veiksmą modeliuoti kaip atskirą objektą su metodais `execute()` ir `undo()`.
+
+Toks sprendimas leidžia išvengti sudėtingos logikos, kuri atsirastų naudojant paprastą procedūrinį metodą. Kiekviena operacija pati „žino“, kaip ją atlikti ir kaip ją atšaukti.
+
+Tai leidžia:
+
+* lengvai įgyvendinti undo/redo be sudėtingų sąlygų
+* išplėsti sistemą pridedant naujas operacijas nekeičiat esamos logikos
+* sumažinti komponentų priklausomybę
+
 ---
 
 ### Objektų ryšiai (Kompozicija)
@@ -107,6 +123,26 @@ Klasė `OperationHistory` saugo operacijų sąrašus:
 self._undo_stack = []
 self._redo_stack = []
 ```
+
+Tai yra kompozicijos pavyzdys, kai vienas objektas valdo kitus objektus.
+
+---
+
+### Architektūriniai sprendimai
+
+Projektas padalintas į atskirus modulius:
+
+* `file_manager.py` – darbas su failais
+* `operations.py` – operacijos
+* `history.py` – istorija
+
+Tai atitinka **Single Responsibility Principle**, nes kiekvienas modulis turi vieną atsakomybę.
+
+Tokiu būdu:
+
+* lengviau testuoti sistemą
+* paprasčiau keisti kodą
+* aiškesnė programos struktūra
 
 ---
 
@@ -153,17 +189,25 @@ Testuojama:
 
 ## Rezultatai
 
-Sukurta programa leidžia atlikti visas numatytas failų operacijas.
+Sukurta sistema leidžia atlikti visas numatytas funkcijas.
 
-Undo/redo funkcionalumas veikia teisingai ir leidžia atšaukti arba pakartoti veiksmus.
+Undo/redo mechanizmas veikia stabiliai net atliekant kelias operacijas iš eilės.
 
-Programa veikia stabiliai ir be klaidų.
+Programa buvo ištestuota naudojant skirtingus scenarijus, ir visos funkcijos veikė teisingai.
 
 ---
 
 ## Išvados
 
-Atliekant šį darbą buvo pritaikyti visi pagrindiniai objektinio programavimo principai.
+Atliekant šį darbą buvo pritaikyti pagrindiniai objektinio programavimo principai.
+
+Darbo metu buvo įgyta praktinė patirtis taikant OOP principus realiame projekte.
+
+Pagrindinė išvada – teisingai parinkta architektūra (OOP + Command Pattern) leidžia:
+
+* supaprastinti sudėtingą funkcionalumą (undo/redo)
+* padidinti programos lankstumą
+* sumažinti klaidų tikimybę
 
 Pasiekti rezultatai:
 
