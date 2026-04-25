@@ -1,10 +1,10 @@
-from file_manager import FileManager
+﻿from file_manager import FileManager
 from history import OperationHistory
 from operations import (
     CreateFileOperation,
     DeleteFileOperation,
     RenameFileOperation,
-    WriteFileOperation
+    WriteFileOperation,
 )
 
 
@@ -29,28 +29,37 @@ def main():
         try:
             if choice == "1":
                 name = input("File name: ")
-                history.execute_operation(CreateFileOperation(manager, name))
+                operation = CreateFileOperation(manager, name)
+                history.execute_operation(operation)
 
             elif choice == "2":
                 name = input("File name: ")
                 text = input("Text: ")
-                history.execute_operation(WriteFileOperation(manager, name, text))
+                operation = WriteFileOperation(manager, name, text)
+                history.execute_operation(operation)
 
             elif choice == "3":
                 name = input("File name: ")
                 print(manager.read_file(name))
 
             elif choice == "4":
-                old = input("Old name: ")
-                new = input("New name: ")
-                history.execute_operation(RenameFileOperation(manager, old, new))
+                old_name = input("Old name: ")
+                new_name = input("New name: ")
+                operation = RenameFileOperation(manager, old_name, new_name)
+                history.execute_operation(operation)
 
             elif choice == "5":
                 name = input("File name: ")
-                history.execute_operation(DeleteFileOperation(manager, name))
+                operation = DeleteFileOperation(manager, name)
+                history.execute_operation(operation)
 
             elif choice == "6":
-                print(manager.list_files())
+                files = manager.list_files()
+                if files:
+                    for file in files:
+                        print(file)
+                else:
+                    print("No files found.")
 
             elif choice == "7":
                 history.undo()
@@ -59,10 +68,14 @@ def main():
                 history.redo()
 
             elif choice == "9":
+                print("Program closed.")
                 break
 
-        except Exception as e:
-            print("Error:", e)
+            else:
+                print("Invalid choice.")
+
+        except Exception as error:
+            print("Error:", error)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 
 
 class FileManager:
@@ -47,4 +47,8 @@ class FileManager:
             return file.read()
 
     def list_files(self):
-        return [file.name for file in self._base_directory.iterdir() if file.is_file()]
+        return [
+            file.name
+            for file in self._base_directory.iterdir()
+            if file.is_file()
+        ]

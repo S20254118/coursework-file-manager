@@ -1,4 +1,4 @@
-class OperationHistory:
+﻿class OperationHistory:
     def __init__(self):
         self._undo_stack = []
         self._redo_stack = []
@@ -11,6 +11,7 @@ class OperationHistory:
     def undo(self):
         if not self._undo_stack:
             raise ValueError("Nothing to undo.")
+
         operation = self._undo_stack.pop()
         operation.undo()
         self._redo_stack.append(operation)
@@ -18,6 +19,7 @@ class OperationHistory:
     def redo(self):
         if not self._redo_stack:
             raise ValueError("Nothing to redo.")
+
         operation = self._redo_stack.pop()
         operation.execute()
         self._undo_stack.append(operation)
