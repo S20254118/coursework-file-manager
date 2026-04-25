@@ -1,48 +1,36 @@
-# 📂 File Manager System (OOP Coursework)
+# Failų valdymo sistema (OOP kursinis darbas)
 
-This project is a **File Manager System** developed in Python using Object-Oriented Programming (OOP) principles.
+## Įvadas
 
-The system allows users to perform file operations and includes **undo/redo functionality**, demonstrating practical software design concepts.
+Šio kursinio darbo tikslas – sukurti paprastą failų valdymo sistemą, naudojant Python programavimo kalbą ir objektinio programavimo (OOP) principus.
 
----
-
-## 🚀 Features
-
-* Create file
-* Write to file
-* Read file
-* Rename file
-* Delete file
-* List files
-* Undo / Redo operations
-* Error handling
+Programa leidžia atlikti pagrindines failų operacijas (kurti, skaityti, rašyti, pervadinti, trinti) bei turi undo/redo funkcionalumą, kuris leidžia atšaukti arba pakartoti veiksmus.
 
 ---
 
-## ▶️ How to run
+## Programos struktūra
 
-### Run the program:
+Projektas susideda iš kelių pagrindinių dalių:
 
-```bash
-python main.py
-```
-
-### Run tests:
-
-```bash
-python -m unittest discover -s tests
-```
+* `main.py` – pagrindinė programa su vartotojo sąsaja
+* `file_manager.py` – atsakingas už darbą su failais
+* `operations.py` – failų operacijų klasės
+* `history.py` – operacijų istorijos valdymas (undo/redo)
+* `tests/` – vienetiniai testai
 
 ---
 
-## 🧠 OOP Principles Used
+## OOP principų taikymas
 
-### 🔹 Abstraction
+### Abstrakcija
 
-An abstract base class defines the structure for all file operations.
+Naudojama abstrakti klasė `FileOperation`, kuri apibrėžia bendrą visų operacijų struktūrą.
 
 ```python
 class FileOperation(ABC):
+    def __init__(self, file_manager):
+        self._file_manager = file_manager
+
     @abstractmethod
     def execute(self):
         pass
@@ -54,179 +42,141 @@ class FileOperation(ABC):
 
 ---
 
-### 🔹 Inheritance
+### Paveldėjimas
 
-Specific operations inherit from the base class:
+Konkrečios operacijos paveldi bazinę klasę.
 
 ```python
 class CreateFileOperation(FileOperation):
+    def __init__(self, file_manager, filename):
+        super().__init__(file_manager)
+        self._filename = filename
+
     def execute(self):
         self._file_manager.create_file(self._filename)
 ```
 
 ---
 
-### 🔹 Polymorphism
+### Polimorfizmas
 
-All operations are executed through the same interface:
-
-```python
-operation.execute()
-operation.undo()
-```
-
-Each operation behaves differently but is used the same way.
-
----
-
-### 🔹 Encapsulation
-
-Internal data is protected:
-
-```python
-self._base_directory
-self._undo_stack
-```
-
----
-
-## 🏗️ Design Pattern
-
-### Command Pattern
-
-The **Command Pattern** is used to represent file operations as objects.
-
-This allows:
-
-* storing operations in history
-* implementing undo/redo
-* separating logic from execution
-
-Example:
+Visos operacijos vykdomos naudojant tuos pačius metodus `execute()` ir `undo()`.
 
 ```python
 history.execute_operation(operation)
 history.undo()
 ```
 
+Skirtingos operacijos realizuoja šiuos metodus skirtingai, bet naudojamos vienodai.
+
 ---
 
-## 🔗 Object Relationships (Composition)
+### Inkapsuliacija
 
-The system uses composition:
+Naudojami privatūs atributai, kurie saugo vidinę objekto būseną.
 
 ```python
+self._base_directory = Path(base_directory)
 self._undo_stack = []
 self._redo_stack = []
 ```
 
-`OperationHistory` stores and manages operations.
-
 ---
 
-## 📂 File Handling (I/O)
+## Projektavimo šablonas
 
-The program works with real files:
+Šiame projekte naudojamas **Command Pattern**.
+
+Kiekviena operacija yra atskiras objektas:
 
 ```python
-with open(path, "w", encoding="utf-8") as file:
-    file.write(content)
+operation = CreateFileOperation(manager, name)
+history.execute_operation(operation)
 ```
 
-Supports:
+Šis šablonas leidžia:
 
-* reading
-* writing
-* deleting
-* renaming
+* saugoti operacijų istoriją
+* įgyvendinti undo/redo funkcionalumą
+* atskirti operacijų logiką nuo jų vykdymo
 
 ---
 
-## 🧪 Testing
+## Objektų ryšiai (Kompozicija)
 
-Unit tests are implemented using `unittest`.
-
-Test coverage:
-
-* file creation
-* read/write operations
-* delete functionality
-* basic system behavior
-
-Example output:
-
-```
-Ran tests successfully
-OK
-```
-
----
-
-## 📁 Project Structure
-
-```
-project/
-│
-├── main.py
-├── file_manager.py
-├── operations.py
-├── history.py
-├── report.md
-├── README.md
-├── .gitignore
-└── tests/
-    └── test_file_manager.py
-```
-
----
-
-## 🧩 Example Workflow
-
-```
-1 → Create file
-2 → Write content
-3 → Read content
-7 → Undo
-8 → Redo
-```
-
----
-
-## ⚠️ Error Handling
-
-The system handles common errors:
-
-* file not found
-* file already exists
-* invalid operations
-
-Example:
+Klasė `OperationHistory` saugo operacijų sąrašus:
 
 ```python
-raise FileNotFoundError("File not found")
+class OperationHistory:
+    def __init__(self):
+        self._undo_stack = []
+        self._redo_stack = []
+```
+
+Tai yra kompozicijos pavyzdys, kai vienas objektas valdo kitus objektus.
+
+---
+
+## Darbas su failais (I/O)
+
+Programa dirba su failais naudojant Python funkcijas.
+
+```python
+def write_file(self, filename, content):
+    path = self._get_path(filename)
+    with open(path, "w", encoding="utf-8") as file:
+        file.write(content)
+```
+
+Taip pat naudojamas skaitymas:
+
+```python
+def read_file(self, filename):
+    with open(path, "r", encoding="utf-8") as file:
+        return file.read()
 ```
 
 ---
 
-## 🏁 Conclusion
+## Testavimas
 
-This project demonstrates how OOP principles can be applied in real applications.
+Projektui sukurti vienetiniai testai naudojant `unittest`.
 
-Key achievements:
+Pavyzdys:
 
-* clear architecture
-* use of design patterns
-* modular structure
-* reliable file operations
+```python
+def test_write_and_read_file(self):
+    self.manager.create_file("test.txt")
+    self.manager.write_file("test.txt", "Hello")
+    content = self.manager.read_file("test.txt")
+    self.assertEqual(content, "Hello")
+```
 
-The system is simple but scalable and can be extended in the future.
+Testuojama:
+
+* failų kūrimas
+* skaitymas ir rašymas
+* failų trynimas
 
 ---
 
-## 🔮 Possible Improvements
+## Rezultatai
 
-* GUI interface
-* file search
-* folder navigation
-* logging system
-* file copy/move functionality
+Programa veikia stabiliai ir leidžia atlikti visas numatytas funkcijas.
+
+Undo/redo funkcionalumas veikia teisingai ir leidžia atšaukti paskutinius veiksmus.
+
+---
+
+## Išvados
+
+Atliekant šį darbą buvo pritaikyti pagrindiniai objektinio programavimo principai.
+
+Pasiekti rezultatai:
+
+* sukurta veikianti failų valdymo sistema
+* panaudotas projektavimo šablonas
+* įgyvendintas undo/redo mechanizmas
+* programa yra aiškios struktūros ir lengvai plečiama
+
+Šis projektas parodo, kaip OOP principai gali būti naudojami praktikoje kuriant realias sistemas.
